@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace MasterMind
 {
@@ -28,8 +29,11 @@ namespace MasterMind
         string color1, color2, color3, color4;
         string[] solution;
         string[] options = { "Red", "Yellow", "Orange", "White", "Green", "Blue" };
-        string attempts = "x";
-        bool debugMode = false;        
+        int attempts = 0;
+        bool debugMode = false;
+        DispatcherTimer timer;
+        TimeSpan elapsedTime;
+        DateTime clicked;
 
         public MainWindow()
         {
@@ -38,6 +42,9 @@ namespace MasterMind
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Get the current time when the program is launched.
+            clicked = DateTime.Now;
+
             // Set current Title in the StringBuilder.
             sb.Append(this.Title);
 
@@ -57,11 +64,26 @@ namespace MasterMind
             // Change Title to data from the StringBuilder.
             this.Title = sb.ToString();
 
+            // Set timer to timerLabel.
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(500);
+            timer.Tick += Timer_Tick;
+            timerLabel.Content = "Timer: 0 / 10";
+
             // Generate 6 available colors for each ComboBox (from the options array variable)
             AddComboBoxItems(ComboBoxOption1);
             AddComboBoxItems(ComboBoxOption2);
             AddComboBoxItems(ComboBoxOption3);
             AddComboBoxItems(ComboBoxOption4);
+
+            // Start timer when window is loaded.
+            StartCountdown(timer, clicked);
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            elapsedTime = DateTime.Now - clicked;
+            timerLabel.Content = $"Timer: {elapsedTime.TotalSeconds.ToString("N0")} / 10";
         }
 
         private string GenerateRandomColor()
@@ -153,6 +175,9 @@ namespace MasterMind
             CheckCode(solution, ComboBoxOption2, colorLabel2, 1);
             CheckCode(solution, ComboBoxOption3, colorLabel3, 2);
             CheckCode(solution, ComboBoxOption4, colorLabel4, 3);
+            timer.Stop();
+            clicked = DateTime.Now;
+            StartCountdown(timer, clicked);
         }
 
         private bool ColorInCorrectPosition(string[] solution, ComboBox comboBox, int position)
@@ -196,6 +221,7 @@ namespace MasterMind
                 return false;
             }
         }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (ToggleDebug(e))
@@ -206,6 +232,12 @@ namespace MasterMind
             {
                 solutionTextBox.Visibility = Visibility.Hidden;
             }
+        }
+
+        private void StartCountdown(DispatcherTimer timer, DateTime clicked)
+        {
+            clicked = DateTime.Now;
+            timer.Start();
         }
     }
 }
