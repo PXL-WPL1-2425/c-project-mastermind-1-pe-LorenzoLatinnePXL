@@ -28,6 +28,7 @@ namespace MasterMind
         string color1, color2, color3, color4;
         string[] solution;
         string[] options = { "Red", "Yellow", "Orange", "White", "Green", "Blue" };
+        string attempts = "x";
         
 
         public MainWindow()
@@ -48,7 +49,10 @@ namespace MasterMind
             solution = new string[] { color1, color2, color3, color4 };
 
             // Set randomized colors in the StringBuilder.
-            sb.Append($" {color1}, {color2}, {color3}, {color4}");
+            sb.Append($" - {color1}, {color2}, {color3}, {color4}");
+
+            // Set attempts in the StringBuilder;
+            sb.Append($" - Poging {attempts}");
 
             // Change Title to data from the StringBuilder.
             this.Title = sb.ToString();
