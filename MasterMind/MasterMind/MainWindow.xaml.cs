@@ -66,9 +66,9 @@ namespace MasterMind
 
             // Set timer to timerLabel.
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(500);
+            timer.Interval = TimeSpan.FromMilliseconds(1);
             timer.Tick += Timer_Tick;
-            timerLabel.Content = "Timer: 0 / 10";
+            timerLabel.Content = "Timer: 0,000 / 10";
 
             // Generate 6 available colors for each ComboBox (from the options array variable)
             AddComboBoxItems(ComboBoxOption1);
@@ -82,8 +82,27 @@ namespace MasterMind
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            StartCountdown(timer, clicked);
             elapsedTime = DateTime.Now - clicked;
-            timerLabel.Content = $"Timer: {elapsedTime.TotalSeconds.ToString("N0")} / 10";
+
+            if (elapsedTime.TotalSeconds > 7)
+            {
+                timerLabel.Foreground = Brushes.Red;
+                timerLabel.FontWeight = FontWeights.Bold;
+            } 
+            else
+            {
+                timerLabel.Foreground = Brushes.Black;
+                timerLabel.FontWeight = FontWeights.Regular;
+            }
+
+            if (elapsedTime.TotalSeconds >= 10)
+            {
+                StopCountdown(timer, clicked, elapsedTime);
+                clicked = DateTime.Now;
+                StartCountdown(timer, clicked);
+            }
+            timerLabel.Content = $"Timer: {elapsedTime.TotalSeconds.ToString("N3")} / 10";
         }
 
         private string GenerateRandomColor()
@@ -176,6 +195,10 @@ namespace MasterMind
             CheckCode(solution, ComboBoxOption3, colorLabel3, 2);
             CheckCode(solution, ComboBoxOption4, colorLabel4, 3);
             timer.Stop();
+            attempts++;
+            sb.Clear();
+            sb.Append($"MasterMind - Poging {attempts}");
+            this.Title = sb.ToString();
             clicked = DateTime.Now;
             StartCountdown(timer, clicked);
         }
@@ -238,6 +261,15 @@ namespace MasterMind
         {
             clicked = DateTime.Now;
             timer.Start();
+            
+        }
+        private void StopCountdown(DispatcherTimer timer, DateTime clicked, TimeSpan elapsedTime)
+        {
+            timer.Stop();
+            attempts++;
+            sb.Clear();
+            sb.Append($"MasterMind - Poging {attempts}");
+            this.Title = sb.ToString();
         }
     }
 }
