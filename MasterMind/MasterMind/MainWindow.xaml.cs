@@ -29,7 +29,7 @@ namespace MasterMind
         string[] solution;
         string[] options = { "Red", "Yellow", "Orange", "White", "Green", "Blue" };
         string attempts = "x";
-        
+        bool debugMode = false;        
 
         public MainWindow()
         {
@@ -48,8 +48,8 @@ namespace MasterMind
             color4 = GenerateRandomColor();
             solution = new string[] { color1, color2, color3, color4 };
 
-            // Set randomized colors in the StringBuilder.
-            sb.Append($" - {color1}, {color2}, {color3}, {color4}");
+            // Set solution in the hidden TextBox.
+            solutionTextBox.Text = $"{color1}, {color2}, {color3}, {color4}";
 
             // Set attempts in the StringBuilder;
             sb.Append($" - Poging {attempts}");
@@ -182,6 +182,29 @@ namespace MasterMind
             else
             {
                 colorLabel.BorderThickness = new Thickness(0);
+            }
+        }
+
+        private bool ToggleDebug(KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.F12)
+            {
+                return true;
+            } 
+            else
+            {
+                return false;
+            }
+        }
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (ToggleDebug(e))
+            {
+                solutionTextBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                solutionTextBox.Visibility = Visibility.Hidden;
             }
         }
     }
