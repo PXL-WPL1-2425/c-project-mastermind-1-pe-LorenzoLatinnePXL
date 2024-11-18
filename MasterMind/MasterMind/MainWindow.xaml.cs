@@ -233,6 +233,12 @@ namespace MasterMind
             }
         }
 
+        /// <summary>
+        /// This methods checks whether or not the player has pressed the combination keys CTRL+F12 to enter Debug Mode and check the
+        /// code solution in the hidden solutionTextBox.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         private bool ToggleDebug(KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.F12)
@@ -257,12 +263,24 @@ namespace MasterMind
             }
         }
 
+        /// <summary>
+        /// Resets the current time of the program timer to 0 and restarts the timer.
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <param name="clicked"></param>
         private void StartCountdown(DispatcherTimer timer, DateTime clicked)
         {
             clicked = DateTime.Now;
             timer.Start();
             
         }
+
+        /// <summary>
+        /// Stops the program timer, adds an attempt to the counter and shows this to the player in the Title bar of the game.
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <param name="clicked"></param>
+        /// <param name="elapsedTime"></param>
         private void StopCountdown(DispatcherTimer timer, DateTime clicked, TimeSpan elapsedTime)
         {
             timer.Stop();
